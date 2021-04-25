@@ -1,0 +1,22 @@
+{
+  "name": "proshop-ecommerce-2nd",
+  "version": "1.0.0",
+  "description": "Mern-FullStack",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/norrico31/ProShop.git"
+  },
+  "author": "Norrico Gerald Biason",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/norrico31/ProShop/issues"
+  },
+  "homepage": "https://github.com/norrico31/ProShop#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
