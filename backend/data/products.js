@@ -79,4 +79,6 @@ const products = [
   },
 ]
 
-module.exports = products
+export default products // ES MODULE
+
+// module.exports = products // COMMON JS
