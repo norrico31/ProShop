@@ -8,7 +8,7 @@ import Loader from '../components/Loader'
 import Message from '../components/Message'
 
 export const ProductScreen = ({match, history}) => {
-    const [qty, qtySet] = useState(0)
+    const [qty, qtySet] = useState(1)
     const productId = match.params.id
     const dispatch = useDispatch()
     const {product, loading, error} = useSelector(state => state.productDetails)
