@@ -2,7 +2,7 @@ import {useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {useSelector, useDispatch} from 'react-redux'
 import {Row, Col, ListGroup, Image, Form, Button, Card} from 'react-bootstrap'
-import {addToCart} from '../store/actions/cartActions'
+import {addToCart, removeFromCart} from '../store/actions/cartActions'
 import Message from '../components/Message'
 
 export const CartScreen = ({match, location, history}) => {
@@ -14,11 +14,17 @@ export const CartScreen = ({match, location, history}) => {
     useEffect(() => {
         if (productId) dispatch(addToCart(productId, qty))
     }, [dispatch, productId, qty])
-    const removeFromCart = id => {
-        console.log(id, 'removed')
+
+    const removeFromCartHandler = id => {
+        history.push('/cart')
+        dispatch(removeFromCart(id))
     }
     const checkOut = () => {
         history.push(`/login?redirect=shipping`)
+    }
+    const formQtyHandler = (cartItemId, targetVal) => {
+        dispatch(addToCart(cartItemId, Number(targetVal)))
+        history.push('/cart')
     }
     return (
         <Row>
@@ -39,7 +45,7 @@ export const CartScreen = ({match, location, history}) => {
                                         ${cartItem.price}
                                     </Col>
                                     <Col md={2}>
-                                        <Form.Control as='select' value={cartItem.qty} onChange={e => dispatch(addToCart(cartItem.product, Number(e.target.value)))}>
+                                        <Form.Control as='select' value={cartItem.qty} onChange={e => formQtyHandler(cartItem.product, e.target.value)}>
                                             {[...Array(cartItem.countInStock).keys()].map(val => (
                                                 <option key={val + 1} value={val + 1}>
                                                     {val + 1}
@@ -48,7 +54,7 @@ export const CartScreen = ({match, location, history}) => {
                                         </Form.Control>
                                     </Col>
                                     <Col md={2}>
-                                        <Button type='button' variant='light' onClick={() => removeFromCart(cartItem.product)}>
+                                        <Button type='button' variant='light' onClick={() => removeFromCartHandler(cartItem.product)}>
                                             <i className='fas fa-trash' />
                                         </Button>
                                     </Col>
