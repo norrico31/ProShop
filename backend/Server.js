@@ -4,16 +4,19 @@ import dotenv from 'dotenv'
 import {connectDB} from './config/db.js'
 import {notFound,errorHandler} from './middleware/errorMiddleware.js'
 import productRouters from './routes/productRoutes.js'
+import userController from './routes/userRoutes.js'
 
 dotenv.config()
 connectDB()
 const app = express()
+app.use(express.json())
 
 app.get('/', (req, res) => {
     res.send('API is running')
 })
 
 app.use('/api/products', productRouters)
+app.use('/api/users', userController)
 
 
 // Middleware function
