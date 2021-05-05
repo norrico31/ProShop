@@ -12,7 +12,6 @@ export const HomeScreen = () => {
     useEffect(() => {
         dispatch(listProducts())
     } ,[dispatch])
-    console.log(productList.products)
     return (
         <>
             <h1>Latest Products</h1>
