@@ -5,6 +5,7 @@ import {connectDB} from './config/db.js'
 import {notFound,errorHandler} from './middleware/errorMiddleware.js'
 import productRouters from './routes/productRoutes.js'
 import userController from './routes/userRoutes.js'
+import orderController from './routes/orderRoutes.js'
 
 dotenv.config()
 connectDB()
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/products', productRouters)
 app.use('/api/users', userController)
+app.use('/api/orders', orderController)
 
 
 // Middleware function
