@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react'
-import {Link} from 'react-router-dom'
 import {Form, Button, Row, Col} from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux'
 import {getUserDetails, updateUserProfile} from '../store/actions/userActions'
