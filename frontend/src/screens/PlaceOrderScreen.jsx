@@ -1,14 +1,15 @@
-import {useState} from 'react'
+import {useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {Button, Row, Col, ListGroup, Image, Card} from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux'
 import Message from '../components/Message'
-import {saveShippingAddress} from '../store/actions/cartActions'
+import {createOrder} from '../store/actions/orderActions'
 import {CheckoutSteps} from '../components/CheckoutSteps'
 
-export const PlaceOrderScreen = () => {
+export const PlaceOrderScreen = ({history}) => {
     const cart = useSelector(({cart}) => cart)
     const {cartItems, paymentMethod, shippingAddress} = cart
+    const dispatch = useDispatch()
 
     // Calculate prices
     const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
@@ -17,9 +18,25 @@ export const PlaceOrderScreen = () => {
     cart.taxPrice = addDecimals(Number((0.15 * cart.itemsPrice).toFixed(2)))
     cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
 
+    const {order, success, error} = useSelector(state => state.orderCreate)
+
     const placeOrderHandler = () => {
-        console.log('place order')
+        dispatch(createOrder({
+            orderItems: cart.cartItems,
+            shippingAddress: shippingAddress,
+            paymentMethod: paymentMethod,
+            itemsPrice: cart.itemsPrice,
+            shippingPrice: cart.shippingPrice,
+            taxPrice: cart.taxPrice,
+            totalPrice: cart.totalPrice
+        }))
     }
+
+    useEffect(() => {
+        if (success) history.push(`/order/${order._id}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [history, success])
+
     return (
         <>
             <CheckoutSteps step1 step2 step3 step4/>
@@ -93,6 +110,9 @@ export const PlaceOrderScreen = () => {
                                         <Col>Total</Col>
                                         <Col>${cart.totalPrice}</Col>
                                     </Row>
+                                </ListGroup.Item>
+                                <ListGroup.Item>
+                                    {error && <Message variant='danger'>{error}</Message>}
                                 </ListGroup.Item>
                                 <ListGroup.Item>
                                     <Button type='button' className='btn-block' disabled={cart.cartItems === 0} onClick={placeOrderHandler}>Place Order</Button>
