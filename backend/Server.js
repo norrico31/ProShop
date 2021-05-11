@@ -20,6 +20,8 @@ app.use('/api/products', productRouters)
 app.use('/api/users', userController)
 app.use('/api/orders', orderController)
 
+app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
+
 
 // Middleware function
 app.use(notFound)
