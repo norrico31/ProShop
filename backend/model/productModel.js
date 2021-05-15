@@ -4,7 +4,7 @@ const reviewSchema = mongoose.Schema({
     name: { type: String, required: true },
     rating: { type: Number, required: true },
     comment: { type: String, required: true },
-}, {timeStamps: true})
+}, {timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt'}})
 
 const productSchema = mongoose.Schema({
     user: {
@@ -54,7 +54,10 @@ const productSchema = mongoose.Schema({
         default: 0
     },
 }, {
-    timeStamps: true
+    timestamps: { 
+        createdAt: 'createdAt', 
+        updatedAt: 'updatedAt' 
+    }
 })
 const Product = mongoose.model('Product', productSchema)
 export default Product

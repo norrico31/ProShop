@@ -32,7 +32,7 @@ export const ProfileScreen = ({location, history}) => {
             }
         }
         
-    }, [history, userInfo, dispatch, user])
+    }, [history, userInfo, dispatch, user, orders])
 
     const submitHandler = e => {
         e.preventDefault()

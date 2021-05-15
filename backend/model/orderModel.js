@@ -46,7 +46,7 @@ const orderSchema = mongoose.Schema({
     deliveredAt: {
         type: Date
     },
-}, {timeStamps: true})
+}, {timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt'}})
 
 const Order = mongoose.model('Order', orderSchema)
 export default Order

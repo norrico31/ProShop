@@ -21,7 +21,10 @@ const userSchema = mongoose.Schema({
         default: false
     },
 }, {
-    timeStamps: true
+    timestamps: { 
+        createdAt: 'createdAt', 
+        updatedAt: 'updatedAt'
+    }
 })
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
