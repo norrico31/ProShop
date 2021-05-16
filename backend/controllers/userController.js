@@ -87,3 +87,11 @@ export const updateUserProfile = AsyncHandler(async (req, res) => {
       throw new Error('User not found')
    }
 })
+
+// @desc    Get all users 
+// @route   GET /api/users
+// @access  Private/Admin
+export const getUsersByAdmin = AsyncHandler(async (req, res) => {
+   const users = await User.find({})
+   res.json(users)
+})
