@@ -3,17 +3,22 @@ import {Link} from 'react-router-dom'
 import {LinkContainer} from 'react-router-bootstrap'
 import {Table, Button} from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux'
-import {adminUserLists} from '../store/actions/userActions'
+import {adminListUsers} from '../store/actions/userActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
-export const UserListScreen = () => {
+export const UserListScreen = ({history}) => {
     const dispatch = useDispatch()
     const {users, loading, error} = useSelector(state => state.adminUserList)
+    const {userInfo} = useSelector(({userLogin}) => userLogin)
 
     useEffect(() => {
-        dispatch(adminUserLists())
-    }, [dispatch])
+        if (userInfo && userInfo.isAdmin) {
+            dispatch(adminListUsers())
+        } else {
+            history.push('/login')
+        }
+    }, [dispatch, userInfo, history])
 
     const deleteUserHandler = userId => {
         console.log(userId)
