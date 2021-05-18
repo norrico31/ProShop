@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import {LinkContainer} from 'react-router-bootstrap'
 import {Table, Button} from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux'
-import {adminListUsers} from '../store/actions/userActions'
+import {adminListUsers, adminDeleteUser} from '../store/actions/userActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
@@ -11,6 +11,7 @@ export const UserListScreen = ({history}) => {
     const dispatch = useDispatch()
     const {users, loading, error} = useSelector(state => state.adminUserList)
     const {userInfo} = useSelector(({userLogin}) => userLogin)
+    const {success: successDelete} = useSelector(function(state){return state.adminDeleteUser})
 
     useEffect(() => {
         if (userInfo && userInfo.isAdmin) {
@@ -18,10 +19,12 @@ export const UserListScreen = ({history}) => {
         } else {
             history.push('/login')
         }
-    }, [dispatch, userInfo, history])
+    }, [dispatch, userInfo, history, successDelete])
 
     const deleteUserHandler = userId => {
-        console.log(userId)
+        if (window.confirm('Are you sure')) {
+            dispatch(adminDeleteUser(userId))
+        }
     }
     return (
         <>
