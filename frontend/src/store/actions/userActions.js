@@ -1,4 +1,4 @@
-import {USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_FAIL, USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_UPDATE_PROFILE_FAIL, USER_DETAILS_RESET, ADMIN_USER_LIST_REQUEST, ADMIN_USER_LIST_SUCCESS, ADMIN_USER_LIST_FAIL, ADMIN_USER_LIST_RESET, ADMIN_USER_DELETE_REQUEST, ADMIN_USER_DELETE_SUCCESS, ADMIN_USER_DELETE_FAIL} from '../constants/userConstants'
+import {USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_FAIL, USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_UPDATE_PROFILE_FAIL, USER_DETAILS_RESET, ADMIN_USER_LIST_REQUEST, ADMIN_USER_LIST_SUCCESS, ADMIN_USER_LIST_FAIL, ADMIN_USER_LIST_RESET, ADMIN_USER_DELETE_REQUEST, ADMIN_USER_DELETE_SUCCESS, ADMIN_USER_DELETE_FAIL, ADMIN_USER_UPDATE_REQUEST, ADMIN_USER_UPDATE_SUCCESS, ADMIN_USER_UPDATE_FAIL} from '../constants/userConstants'
 import {ORDER_LIST_MY_RESET} from '../constants/orderConstants'
 import axios from 'axios'
 
@@ -133,6 +133,31 @@ export const adminDeleteUser = userId => async (dispatch, getState) => {
     } catch (error) {
         dispatch({
             type: ADMIN_USER_DELETE_FAIL, 
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message
+        })
+    }
+}
+
+export const adminUpdateUser = user => async (dispatch, getState) => {
+    const { userLogin: { userInfo: { token }}} = getState()
+    try {
+        dispatch({
+            type: ADMIN_USER_UPDATE_REQUEST
+        })
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token
+            }}
+        const {data} = await axios.patch(`/api/users/${user._id}`, user, config)
+        dispatch({type: ADMIN_USER_UPDATE_SUCCESS})
+        dispatch({
+            type: USER_DETAILS_SUCCESS,
+            payload: data
+        })
+    } catch (error) {
+        dispatch({
+            type: ADMIN_USER_UPDATE_FAIL, 
             payload: error.response && error.response.data.message ? error.response.data.message : error.message
         })
     }
