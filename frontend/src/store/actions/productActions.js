@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { PRODUCT_DETAILS_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS } from '../constants/productConstants'
+import { ADMIN_PRODUCT_DELETE_FAIL, ADMIN_PRODUCT_DELETE_REQUEST, ADMIN_PRODUCT_DELETE_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS } from '../constants/productConstants'
 
 export const listProducts = () => async dispatch => {
     dispatch({type: PRODUCT_LIST_REQUEST})
@@ -24,6 +24,26 @@ export const listProductDetails = productId => async dispatch => {
     } catch (error) {
         dispatch({
             type: PRODUCT_DETAILS_FAIL, payload: error.response && error.response.data.message ? error.response.data.message : error.message
+        })
+    }
+}
+
+export const deleteProductByAdmin = productId => async (dispatch, getState) => {
+    const { userLogin: { userInfo: { token }}} = getState()
+    try {
+        dispatch({
+            type: ADMIN_PRODUCT_DELETE_REQUEST
+        })
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + token
+            }}
+        await axios.delete(`/api/products/${productId}`, config)
+        dispatch({type: ADMIN_PRODUCT_DELETE_SUCCESS})
+    } catch (error) {
+        dispatch({
+            type: ADMIN_PRODUCT_DELETE_FAIL, 
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message
         })
     }
 }

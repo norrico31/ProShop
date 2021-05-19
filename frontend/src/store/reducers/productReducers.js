@@ -1,4 +1,4 @@
-import { PRODUCT_DETAILS_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS } from '../constants/productConstants'
+import { ADMIN_PRODUCT_DELETE_FAIL, ADMIN_PRODUCT_DELETE_REQUEST, ADMIN_PRODUCT_DELETE_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS } from '../constants/productConstants'
 
 export const productListReducer = (state = { products: [] }, action) => {
     switch (action.type) {
@@ -13,7 +13,7 @@ export const productListReducer = (state = { products: [] }, action) => {
     }
 }
 
-export const productDetailsReducer = (state = { product: {reviews: []}}, action) => {
+export const productDetailsReducer = (state = {product: {reviews: []}}, action) => {
     switch (action.type) {
         case PRODUCT_DETAILS_REQUEST:
             return { 
@@ -29,6 +29,28 @@ export const productDetailsReducer = (state = { product: {reviews: []}}, action)
             return { 
                 loading: false,
                 error: action.payload 
+            }
+        default:
+            return state
+    }
+}
+
+export const productDeleteReducer = (state = {}, {type, payload}) => {
+    switch (type) {
+        case ADMIN_PRODUCT_DELETE_REQUEST:
+            return { 
+                loading: true, 
+                ...state
+            }
+        case ADMIN_PRODUCT_DELETE_SUCCESS:
+            return { 
+                loading: false, 
+                success: true
+            }
+        case ADMIN_PRODUCT_DELETE_FAIL:
+            return { 
+                loading: false,
+                error: payload 
             }
         default:
             return state

@@ -3,13 +3,14 @@ import {Link} from 'react-router-dom'
 import {LinkContainer} from 'react-router-bootstrap'
 import {Table, Button, Row, Col} from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux'
-import {listProducts} from '../store/actions/productActions'
+import {listProducts, deleteProductByAdmin} from '../store/actions/productActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
 export const ProductListScreen = ({history, match}) => {
     const dispatch = useDispatch()
     const {error, loading, products} = useSelector(state => state.productList)
+    const {success: successDelete, loading: loadingDelete, error: errorDelete} = useSelector(function(state){return state.adminDeleteProduct})
     const {userInfo} = useSelector(({userLogin}) => userLogin)
 
     useEffect(() => {
@@ -18,7 +19,7 @@ export const ProductListScreen = ({history, match}) => {
         } else {
             history.push('/login')
         }
-    }, [dispatch, userInfo, history])
+    }, [dispatch, userInfo, history, successDelete])
 
     const createProductHandler = productItem => {
 
@@ -26,7 +27,7 @@ export const ProductListScreen = ({history, match}) => {
 
     const deleteUserHandler = userId => {
         if (window.confirm('Are you sure')) {
-            // DELETE PRODUCT
+            dispatch(deleteProductByAdmin(userId))
         }
     }
     return (
@@ -39,6 +40,8 @@ export const ProductListScreen = ({history, match}) => {
                     <Button className='my-3' onClick={createProductHandler}><i className='fas fa-plus'/> Create Product</Button>
                 </Col>
             </Row>
+            {loadingDelete && <Loader />}
+            {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
             {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
                 <Table striped bordered hover responsive className='table-sm'>
                     <thead>
