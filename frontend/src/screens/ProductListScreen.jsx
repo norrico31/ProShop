@@ -1,59 +1,71 @@
 import {useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {LinkContainer} from 'react-router-bootstrap'
-import {Table, Button} from 'react-bootstrap'
+import {Table, Button, Row, Col} from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux'
-import {adminListUsers, adminDeleteUser} from '../store/actions/userActions'
+import {listProducts} from '../store/actions/productActions'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
-export const UserListScreen = ({history}) => {
+export const ProductListScreen = ({history, match}) => {
     const dispatch = useDispatch()
-    const {users, loading, error} = useSelector(state => state.adminUserList)
+    const {error, loading, products} = useSelector(state => state.productList)
     const {userInfo} = useSelector(({userLogin}) => userLogin)
-    const {success: successDelete} = useSelector(function(state){return state.adminDeleteUser})
 
     useEffect(() => {
         if (userInfo && userInfo.isAdmin) {
-            dispatch(adminListUsers())
+            dispatch(listProducts())
         } else {
             history.push('/login')
         }
-    }, [dispatch, userInfo, history, successDelete])
+    }, [dispatch, userInfo, history])
+
+    const createProductHandler = productItem => {
+
+    }
 
     const deleteUserHandler = userId => {
         if (window.confirm('Are you sure')) {
-            dispatch(adminDeleteUser(userId))
+            // DELETE PRODUCT
         }
     }
     return (
         <>
-            <h1>Users</h1>
+            <Row className='aligh-items-center'>
+                <Col>
+                    <h1>Products</h1>
+                </Col>
+                <Col className='text-right'>
+                    <Button className='my-3' onClick={createProductHandler}><i className='fas fa-plus'/> Create Product</Button>
+                </Col>
+            </Row>
             {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
                 <Table striped bordered hover responsive className='table-sm'>
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>NAME</th>
-                            <th>EMAIL</th>
-                            <th>ADMIN</th>
+                            <th>PRICE</th>
+                            <th>CATEGORY</th>
+                            <th>BRAND</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map(user => (
-                            <tr key={user._id}>
-                                <td>{user._id}</td>
-                                <td>{user.name}</td>
-                                <td><Link to={`mailto:${user.email}`}>{user.email}</Link></td>
-                                <td>{user.isAdmin ? (<i className='fas fa-check'  style={{color: 'green'}}/>) : (<i className='fas fa-times' style={{color:'red'}} />)}</td>
+                        {products.map(product => (
+                            <tr key={product._id}>
+                                <td>{product._id}</td>
+                                <td>{product.name}</td>
+                                <td>${product.price}</td>
+                                <td>{product.category}</td>
+                                <td>{product.brand}</td>
                                 <td>
-                                    <LinkContainer to={`/admin/user/${user._id}/edit`}>
+                                    <LinkContainer to={`/admin/product/${product._id}/edit`}>
                                         <Button variant='light' className='btn-sm'>
                                             <i className='fas fa-edit' />
                                         </Button>
                                     </LinkContainer>
-                                    <Button variant='danger' className='btn-sm' onClick={() => deleteUserHandler(user._id)}>
+                                    <Button variant='danger' className='btn-sm' onClick={() => deleteUserHandler(product._id)}>
                                         <i className='fas fa-trash' />
                                     </Button>
                                 </td>
