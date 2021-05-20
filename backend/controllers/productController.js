@@ -49,12 +49,12 @@ const createProductByAdmin = AsyncHandler(async (req, res) => {
         name: 'Sample name',
         price: 0,
         user: req.user._id,
-        image: 'images/sample.jpeg',
+        image: '/images/sample.jpg',
         brand: 'Sample brand',
-        category: 'Sample Category',
+        category: 'Sample category',
         countInStock: 0,
         numReviews: 0,
-        description: 'Sample description'
+        description: 'Sample Description'
     })
 
     const createdProduct = await product.save()

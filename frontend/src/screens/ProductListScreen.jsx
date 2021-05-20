@@ -1,9 +1,9 @@
 import {useEffect} from 'react'
-import {Link} from 'react-router-dom'
 import {LinkContainer} from 'react-router-bootstrap'
 import {Table, Button, Row, Col} from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux'
-import {listProducts, deleteProductByAdmin} from '../store/actions/productActions'
+import {listProducts, deleteProductByAdmin, createProductByAdmin} from '../store/actions/productActions'
+import {ADMIN_PRODUCT_CREATE_RESET} from '../store/constants/productConstants'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
@@ -11,18 +11,25 @@ export const ProductListScreen = ({history, match}) => {
     const dispatch = useDispatch()
     const {error, loading, products} = useSelector(state => state.productList)
     const {success: successDelete, loading: loadingDelete, error: errorDelete} = useSelector(function(state){return state.adminDeleteProduct})
+    const {success: successCreate, loading: loadingCreate, error: errorCreate, product: createdProduct} = useSelector(state => state.adminCreateProduct)
     const {userInfo} = useSelector(({userLogin}) => userLogin)
 
     useEffect(() => {
-        if (userInfo && userInfo.isAdmin) {
-            dispatch(listProducts())
-        } else {
+        dispatch({
+            type: ADMIN_PRODUCT_CREATE_RESET
+        })
+        if (!userInfo && !userInfo.isAdmin) {
             history.push('/login')
         }
-    }, [dispatch, userInfo, history, successDelete])
+        if (successCreate) {
+            history.push(`/admin/product/${createdProduct._id}/edit`)
+        } else {
+            dispatch(listProducts())
+        }
+    }, [dispatch, userInfo, history, successDelete, successCreate,createdProduct])
 
-    const createProductHandler = productItem => {
-
+    const createProductHandler = () => {
+        dispatch(createProductByAdmin())
     }
 
     const deleteUserHandler = userId => {
@@ -40,6 +47,7 @@ export const ProductListScreen = ({history, match}) => {
                     <Button className='my-3' onClick={createProductHandler}><i className='fas fa-plus'/> Create Product</Button>
                 </Col>
             </Row>
+            {loadingCreate ? <Loader /> : errorCreate && <Message variant='danger'>{errorCreate}</Message>}
             {loadingDelete && <Loader />}
             {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
             {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
