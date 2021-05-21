@@ -7,7 +7,7 @@ import {notFound,errorHandler} from './middleware/errorMiddleware.js'
 import productRouters from './routes/productRoutes.js'
 import userController from './routes/userRoutes.js'
 import orderController from './routes/orderRoutes.js'
-import uploadRoutes from './routes/uploadRoutes'
+import uploadRoutes from './routes/uploadRoutes.js'
 
 dotenv.config()
 connectDB()

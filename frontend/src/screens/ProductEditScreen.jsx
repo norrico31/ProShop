@@ -7,6 +7,7 @@ import {FormContainer} from '../components/FormContainer'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { ADMIN_PRODUCT_UPDATE_RESET } from '../store/constants/productConstants'
+import axios from 'axios'
 
 export const ProductEditScreen = ({match, history}) => {
     const productId = match.params.id
@@ -17,6 +18,7 @@ export const ProductEditScreen = ({match, history}) => {
     const [category, categorySet] = useState('')
     const [countInStock, countInStockSet] = useState(0)
     const [description, descriptionSet] = useState(0)
+    const [uploading, uploadingSet] = useState(false)
 
     const dispatch = useDispatch()
     const {product, loading, error} = useSelector(state => state.productDetails)
@@ -42,6 +44,27 @@ export const ProductEditScreen = ({match, history}) => {
             }
         }
     }, [dispatch, product, productId, history, successUpdate])
+
+    const uploadFileHandler = async e => {
+        const file = e.target.files[0]
+        const formData = new FormData()
+        formData.append('image', file)
+        uploadingSet(true)
+
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+            const res = await axios.post('/api/upload', formData, config)
+            imageSet(res?.data)
+            uploadingSet(false)
+        } catch (error) {
+            console.error(error)
+            uploadingSet(false)
+        }
+    }
 
     const submitHandler = e => {
         e.preventDefault()
@@ -79,6 +102,9 @@ export const ProductEditScreen = ({match, history}) => {
                         <Form.Group controlId='brand'>
                             <Form.Label>Brand</Form.Label>
                             <Form.Control type='text' placeholder='Enter brand' value={brand} onChange={e => brandSet(e.target.value)} />
+                            <Form.File id='image-file' label='Choose File' custom onChange={uploadFileHandler}>
+                                {uploading && <Loader />}
+                            </Form.File>
                         </Form.Group>
                         <Form.Group controlId='countInStock'>
                             <Form.Label>Count In Stock</Form.Label>
