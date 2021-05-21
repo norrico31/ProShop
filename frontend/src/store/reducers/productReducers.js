@@ -1,4 +1,4 @@
-import { ADMIN_PRODUCT_CREATE_FAIL, ADMIN_PRODUCT_CREATE_REQUEST, ADMIN_PRODUCT_CREATE_RESET, ADMIN_PRODUCT_CREATE_SUCCESS, ADMIN_PRODUCT_DELETE_FAIL, ADMIN_PRODUCT_DELETE_REQUEST, ADMIN_PRODUCT_DELETE_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS } from '../constants/productConstants'
+import { ADMIN_PRODUCT_CREATE_FAIL, ADMIN_PRODUCT_CREATE_REQUEST, ADMIN_PRODUCT_CREATE_RESET, ADMIN_PRODUCT_CREATE_SUCCESS, ADMIN_PRODUCT_DELETE_FAIL, ADMIN_PRODUCT_DELETE_REQUEST, ADMIN_PRODUCT_DELETE_SUCCESS, ADMIN_PRODUCT_UPDATE_FAIL, ADMIN_PRODUCT_UPDATE_REQUEST, ADMIN_PRODUCT_UPDATE_RESET, ADMIN_PRODUCT_UPDATE_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS } from '../constants/productConstants'
 
 export const productListReducer = (state = { products: [] }, action) => {
     switch (action.type) {
@@ -77,6 +77,30 @@ export const productCreateReducer = (state = {}, {type, payload}) => {
             }
         case ADMIN_PRODUCT_CREATE_RESET:
             return {}
+        default:
+            return state
+    }
+}
+
+export const productUpdateReducer = (state = {product:{}}, {type, payload}) => {
+    switch (type) {
+        case ADMIN_PRODUCT_UPDATE_REQUEST:
+            return { 
+                loading: true, 
+            }
+        case ADMIN_PRODUCT_UPDATE_SUCCESS:
+            return { 
+                loading: false, 
+                success: true,
+                product: payload
+            }
+        case ADMIN_PRODUCT_UPDATE_FAIL:
+            return { 
+                loading: false,
+                error: payload 
+            }
+        case ADMIN_PRODUCT_UPDATE_RESET:
+            return { product: {} }
         default:
             return state
     }
