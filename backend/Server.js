@@ -1,4 +1,5 @@
 import express from 'express'
+import path from 'path'
 import colors from 'colors'
 import dotenv from 'dotenv'
 import {connectDB} from './config/db.js'
@@ -6,6 +7,7 @@ import {notFound,errorHandler} from './middleware/errorMiddleware.js'
 import productRouters from './routes/productRoutes.js'
 import userController from './routes/userRoutes.js'
 import orderController from './routes/orderRoutes.js'
+import uploadRoutes from './routes/uploadRoutes'
 
 dotenv.config()
 connectDB()
@@ -19,9 +21,12 @@ app.get('/', (req, res) => {
 app.use('/api/products', productRouters)
 app.use('/api/users', userController)
 app.use('/api/orders', orderController)
+app.use('/api/upload', uploadRoutes)
 
 app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
 
+const __dirname = path.resolve()
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 
 // Middleware function
 app.use(notFound)
