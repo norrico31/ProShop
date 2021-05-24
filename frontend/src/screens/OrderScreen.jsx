@@ -1,21 +1,23 @@
 import {useState, useEffect} from 'react'
 import {Link} from 'react-router-dom'
-import {Row, Col, ListGroup, Image, Card} from 'react-bootstrap'
+import {Row, Col, ListGroup, Image, Card, Button} from 'react-bootstrap'
 import {useSelector, useDispatch} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import {getOrderDetails, payOrder} from '../store/actions/orderActions'
+import {getOrderDetails, payOrder, adminOrderDeliver} from '../store/actions/orderActions'
 import axios from 'axios'
 import {PayPalButton} from 'react-paypal-button-v2'
-import {ORDER_PAY_RESET} from '../store/constants/orderConstants'
+import {ORDER_PAY_RESET, ADMIN_ORDER_DELIVER_RESET} from '../store/constants/orderConstants'
 
-export const OrderScreen = ({match}) => {
+export const OrderScreen = ({match, history}) => {
     const [sdkReady, sdkReadySet] = useState(false)
     const orderId = match.params.id
     const dispatch = useDispatch()
 
+    const {userInfo} = useSelector(function(state){return state.userLogin})
     const {order, error, loading} = useSelector(state => state.orderDetails)
     const {success: successPay, loading: loadingPay} = useSelector(({orderPay}) => orderPay)
+    const {success: successDelivered, loading: loadingDelivered} = useSelector(({adminMarkOrderAsDelivered}) => adminMarkOrderAsDelivered)
 
     if (!loading) {
          // Calculate prices
@@ -36,7 +38,10 @@ export const OrderScreen = ({match}) => {
             document.body.appendChild(script)
         }
 
-        if (!order || successPay || order._id !== orderId) {
+        if (!userInfo) return history.push('/login')
+
+        if (!order || successPay || order._id !== orderId || successDelivered) {
+            dispatch({type: ADMIN_ORDER_DELIVER_RESET})
             dispatch({type: ORDER_PAY_RESET})
             dispatch(getOrderDetails(orderId))
         } else if (!order.isPaid) {
@@ -46,12 +51,16 @@ export const OrderScreen = ({match}) => {
                 sdkReadySet(true)
             } 
         }
-    }, [dispatch, order, orderId, successPay])
+    }, [dispatch, order, orderId, successPay, successDelivered])
 
     
     const successPaymentHandler = (paymentResult) => {
         console.log(paymentResult)
         dispatch(payOrder(orderId, paymentResult))
+    }
+
+    const deliverHandler = () => {
+        dispatch(adminOrderDeliver(order._id))
     }
 
     return loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
@@ -141,6 +150,14 @@ export const OrderScreen = ({match}) => {
                                             <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />
                                         )}
                                     </ListGroup>
+                                )}
+                                {loadingDelivered && <Loader />}
+                                {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                                    <ListGroup.Item>
+                                        <Button type='button' className='btn btn-block' onClick={deliverHandler}>
+                                            Mark As Delivered
+                                        </Button>
+                                    </ListGroup.Item>
                                 )}
                         </ListGroup>
                     </Card>
