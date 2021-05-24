@@ -8,11 +8,14 @@ import productRouters from './routes/productRoutes.js'
 import userController from './routes/userRoutes.js'
 import orderController from './routes/orderRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
+import morgan from 'morgan'
 
 dotenv.config()
 connectDB()
 const app = express()
 app.use(express.json())
+
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
 
 app.get('/', (req, res) => {
     res.send('API is running')
