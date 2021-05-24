@@ -51,7 +51,7 @@ export const OrderScreen = ({match, history}) => {
                 sdkReadySet(true)
             } 
         }
-    }, [dispatch, order, orderId, successPay, successDelivered])
+    }, [dispatch, order, orderId, successPay, successDelivered, userInfo, history])
 
     
     const successPaymentHandler = (paymentResult) => {

@@ -26,7 +26,7 @@ export const ProductListScreen = ({history, match}) => {
         } else {
             dispatch(listProducts())
         }
-    }, [dispatch, userInfo, history, successDelete, successCreate,createdProduct])
+    }, [dispatch, userInfo, history, successDelete, successCreate, createdProduct])
 
     const createProductHandler = () => {
         dispatch(createProductByAdmin())

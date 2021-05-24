@@ -94,7 +94,7 @@ const updateProductByAdmin = AsyncHandler(async (req, res) => {
     }
 })
 
-// @desc    Craete new review
+// @desc    Create new review
 // @route   POST /api/products/:id/reviews
 // @access  Private
 const createProductReview = AsyncHandler(async (req, res) => {
