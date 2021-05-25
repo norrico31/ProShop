@@ -5,6 +5,7 @@ import {Product} from '../components/Product'
 import {listProducts} from '../store/actions/productActions'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import {ProductCarousel} from '../components/ProductCarousel'
 import {Paginate} from '../components/Paginate'
 
 export const HomeScreen = props => {
@@ -19,6 +20,7 @@ export const HomeScreen = props => {
     } ,[dispatch, keyword, pageNumber])
     return (
         <>
+            {!keyword && <ProductCarousel />}
             <h1>Latest Products</h1>
             {loading ? <Loader />: error ? <h3><Message variant='danger'>{error}</Message></h3> : (
                 <>
