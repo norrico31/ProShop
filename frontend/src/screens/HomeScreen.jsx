@@ -6,12 +6,13 @@ import {listProducts} from '../store/actions/productActions'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 
-export const HomeScreen = () => {
+export const HomeScreen = props => {
+    const keyword = props.match.params.keyword
     const productList = useSelector(function(state) {return state.productList})
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(listProducts())
-    } ,[dispatch])
+        dispatch(listProducts(keyword))
+    } ,[dispatch, keyword])
     return (
         <>
             <h1>Latest Products</h1>
