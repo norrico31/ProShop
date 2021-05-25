@@ -5,15 +5,20 @@ import Products from '../model/productModel.js'
 // @route   GET /api/products
 // @access  Public
 const getProducts = async (req, res) => {
+    const pageSize = 10 // static number pages
+    const page = Number(req.query.pageNumber) || 1
+
     const keyword = req.query.keyword ? {
         name: {
             $regex: req.query.keyword,
             $options: 'i'
         }
     } : {}
+
     try {
-        const products = await Products.find({...keyword})
-        res.json(products)
+        const count = await Products.countDocuments({ ...keyword })
+        const products = await Products.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1))
+        res.json({products, page, pages: Math.ceil(count / pageSize)})
     } catch (error) {
         console.error(error.message)
         res.status(500).json({ message: 'Something went wrong' })
