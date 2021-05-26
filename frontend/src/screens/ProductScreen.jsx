@@ -7,6 +7,7 @@ import { listProductDetails, createProductReview } from '../store/actions/produc
 import {PRODUCT_CREATE_REVIEW_RESET} from '../store/constants/productConstants'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import Meta from '../components/Meta'
 
 export const ProductScreen = ({match, history}) => {
     const productId = match.params.id
@@ -40,10 +41,11 @@ export const ProductScreen = ({match, history}) => {
 
     }
     return (
-        <>
+        <>  
             <Link to='/' className="btn btn-light my-3">Go Back</Link>
             {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message> : (
                 <>
+                    <Meta title={product.name} />
                     <Row>
                         <Col md={6}>
                             <Image src={product.image} alt={product.name} fluid />
