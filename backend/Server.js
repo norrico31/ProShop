@@ -17,10 +17,6 @@ app.use(express.json())
 
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'))
 
-app.get('/', (req, res) => {
-    res.send('API is running')
-})
-
 app.use('/api/products', productRouters)
 app.use('/api/users', userController)
 app.use('/api/orders', orderController)
@@ -30,6 +26,15 @@ app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_I
 
 const __dirname = path.resolve()
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '/frontend/build')))
+    app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html')))
+} else {
+    app.get('/', (req, res) => {
+        res.send('API is running')
+    })
+}
 
 // Middleware function
 app.use(notFound)
